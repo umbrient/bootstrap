@@ -157,16 +157,8 @@ class Tooltip extends BaseComponent {
     return NAME
   }
 
-  static get DATA_KEY() {
-    return DATA_KEY
-  }
-
   static get Event() {
     return Event
-  }
-
-  static get EVENT_KEY() {
-    return EVENT_KEY
   }
 
   static get DefaultType() {
@@ -795,6 +787,6 @@ class Tooltip extends BaseComponent {
  * add .Tooltip to jQuery only if jQuery is present
  */
 
-defineJQueryPlugin(NAME, Tooltip)
+defineJQueryPlugin(Tooltip)
 
 export default Tooltip

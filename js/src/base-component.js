@@ -30,7 +30,7 @@ class BaseComponent {
 
   dispose() {
     Data.remove(this._element, this.constructor.DATA_KEY)
-    EventHandler.off(this._element, `.${this.constructor.DATA_KEY}`)
+    EventHandler.off(this._element, this.constructor.EVENT_KEY)
     this._element = null
   }
 
@@ -42,6 +42,18 @@ class BaseComponent {
 
   static get VERSION() {
     return VERSION
+  }
+
+  static get NAME() {
+    throw new Error('You have to implement the static method "NAME", for each component!')
+  }
+
+  static get DATA_KEY() {
+    return `bs.${this.NAME}`
+  }
+
+  static get EVENT_KEY() {
+    return `.${this.DATA_KEY}`
   }
 }
 
