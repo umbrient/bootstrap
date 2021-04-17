@@ -4,6 +4,7 @@ import EventHandler from '../../src/dom/event-handler'
 /** Test helpers */
 import { clearBodyAndDocument, clearFixture, createEvent, getFixture, jQueryMock } from '../helpers/fixture'
 import { isVisible } from '../../src/util'
+import ScrollBarHelper from '../../src/util/scrollbar'
 
 describe('Offcanvas', () => {
   let fixtureEl
@@ -161,33 +162,35 @@ describe('Offcanvas', () => {
 
       const offCanvasEl = fixtureEl.querySelector('.offcanvas')
       const offCanvas = new Offcanvas(offCanvasEl, { scroll: true })
-      const initialOverFlow = document.body.style.overflow
+      const doc = document.documentElement
+      const initialOverFlow = doc.style.overflowY
 
       offCanvasEl.addEventListener('shown.bs.offcanvas', () => {
-        expect(document.body.style.overflow).toEqual(initialOverFlow)
+        expect(doc.style.overflowY).toEqual(initialOverFlow)
 
         offCanvas.hide()
       })
       offCanvasEl.addEventListener('hidden.bs.offcanvas', () => {
-        expect(document.body.style.overflow).toEqual(initialOverFlow)
+        expect(doc.style.overflowY).toEqual(initialOverFlow)
         done()
       })
       offCanvas.show()
     })
 
-    it('if scroll is disabled, should not allow body to scroll while offcanvas is open', done => {
+    it('if scroll is disabled, should call ScrollBarHelper to handle scrollBar on body', done => {
       fixtureEl.innerHTML = '<div class="offcanvas"></div>'
 
+      spyOn(ScrollBarHelper.prototype, 'hide').and.callThrough()
+      spyOn(ScrollBarHelper.prototype, 'reset').and.callThrough()
       const offCanvasEl = fixtureEl.querySelector('.offcanvas')
       const offCanvas = new Offcanvas(offCanvasEl, { scroll: false })
 
       offCanvasEl.addEventListener('shown.bs.offcanvas', () => {
-        expect(document.body.style.overflow).toEqual('hidden')
-
+        expect(ScrollBarHelper.prototype.hide).toHaveBeenCalled()
         offCanvas.hide()
       })
       offCanvasEl.addEventListener('hidden.bs.offcanvas', () => {
-        expect(document.body.style.overflow).not.toEqual('hidden')
+        expect(ScrollBarHelper.prototype.reset).toHaveBeenCalled()
         done()
       })
       offCanvas.show()
